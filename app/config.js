@@ -1,3 +1,4 @@
+console.log('running config.js');
 var path = require('path');
 // var knex = require('knex')({
 //   client: 'mongodb',
@@ -9,9 +10,11 @@ var path = require('path');
 // //var db = require('bookshelf')(knex);
 var mongoose = require('mongoose');
 
+mongoose.connect('mongodb://localhost/HelloMongoose');
+
 var Schema = mongoose.Schema;
 
-var urls = new Schema({
+var urlSchema = new Schema({
   id: Number,
   url: String,
   baseUrl: String,
@@ -22,9 +25,18 @@ var urls = new Schema({
   updatedAt: { type: Date, default: Date.now },
   // comments: [{ body: String, date: Date }],
 
-}); 
+});
 
-var users = new Schema({
+// var Url = mongoose.model('Url', urlSchema);
+module.exports.urlSchema = urlSchema;
+
+// create a table urlSchema
+// This table should exist in a mongo query
+
+
+
+
+var userSchema = new Schema({
   id: Number,
   name: String,
   password: String,
@@ -33,6 +45,28 @@ var users = new Schema({
   // comments: [{ body: String, date: Date }],
 
 }); 
+
+module.exports.userSchema = userSchema;
+
+
+
+var User = mongoose.model('User', userSchema);
+
+var newUser = User({
+  name: 'Peter Quill',
+  username: 'starlord55',
+  password: 'password',
+  admin: true
+});
+
+// save the user
+newUser.save(function(err) {
+  if (err) throw err;
+
+  console.log('User created!');
+});
+
+
 
 // db.knex.schema.hasTable('urls').then(function(exists) {
 //   if (!exists) {
@@ -63,4 +97,4 @@ var users = new Schema({
 //   }
 // });
 
-module.exports = mongoose;
+//module.exports = mongoose;

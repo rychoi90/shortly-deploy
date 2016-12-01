@@ -81,9 +81,14 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
-        // git add .
-        // git commit -m 'push to production {timestamp}'
-        // git push live master
+        command: [
+          'git add .', 
+          'git commit', 
+          'git push live master']
+          .join(' && ')
+      },
+      mongod: {
+        command: 'mongod --dbpath ./data/db'
       }
     },
   });
@@ -122,6 +127,7 @@ module.exports = function(grunt) {
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
       // add your production server task here
+      grunt.task.run(['build']);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
@@ -130,7 +136,6 @@ module.exports = function(grunt) {
   grunt.registerTask('deploy', function(n) {
     if (grunt.option('prod')) {
       // add your production server task here
-      grunt.task.run(['build']);
       grunt.task.run(['upload']);
     } else {
       grunt.task.run(['build']);
