@@ -2,7 +2,15 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['public/client/**/*.js'],
+        dest: 'dist/built.js',
+      },
     },
 
     mochaTest: {
@@ -23,15 +31,35 @@ module.exports = function(grunt) {
 
 
     uglify: {
+      my_target: {
+        files: {
+          'dist/built.min.js': ['dist/built.js']
+        }
+      }
     },
 
     eslint: {
       target: [
         // Add list of files to lint here
+        'app/**/*.js',
+        'dist/**/*.js',
+        'lib/**/*.js',
+        'public/client/**/*.js',
+        'tests/**/*.js',
+        '*.js'
       ]
     },
 
     cssmin: {
+      options: {
+        shorthandCompacting: false,
+        roundingPrecision: -1
+      },
+      target: {
+        files: {
+          'dist/style.min.css': ['public/style.css']
+        }
+      }
     },
 
     watch: {
@@ -53,6 +81,9 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        // git add .
+        // git commit -m 'push to production {timestamp}'
+        // git push live master
       }
     },
   });
@@ -74,11 +105,18 @@ module.exports = function(grunt) {
   // Main grunt tasks
   ////////////////////////////////////////////////////
 
-  grunt.registerTask('test', [
+  grunt.registerTask('test', [ 
+    'nodemon',
     'mochaTest'
   ]);
 
   grunt.registerTask('build', [
+    'nodemon', 
+    'mochaTest', 
+    'eslint', 
+    'concat', 
+    'uglify', 
+    'cssmin'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -89,9 +127,13 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('deploy', [
-    // add your deploy tasks here
-  ]);
-
-
+  grunt.registerTask('deploy', function(n) {
+    if (grunt.option('prod')) {
+      // add your production server task here
+      grunt.task.run(['build']);
+      grunt.task.run(['upload']);
+    } else {
+      grunt.task.run(['build']);
+    }
+  });
 };
