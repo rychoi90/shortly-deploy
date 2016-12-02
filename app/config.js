@@ -3,7 +3,7 @@ var path = require('path');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-mongoose.connect('mongodb://192.241.208.192/HelloMongoose');
+mongoose.connect('mongodb://localhost/HelloMongoose');
 var db = mongoose.connection;
 
 db.on('error', function(err) {
