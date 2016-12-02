@@ -87,8 +87,22 @@ module.exports = function(grunt) {
           'git push live master']
           .join(' && ')
       },
+      // mongod: {
+      //   command: [
+      //     'mongod --dbpath ./data/db', 
+      //     'nodemon server.js',
+      //     'mongo']
+      //   .join(' | ')
+      // },
+
+      // db.users.find().pretty()
       mongod: {
         command: 'mongod --dbpath ./data/db'
+      },
+
+      // just testing
+      ls: {
+        command: 'ls .'
       }
     },
   });
